@@ -1,9 +1,15 @@
 import numpy as np
+import pandas as pd
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
 def load_data(filename):
     with open(filename) as i:
         lines = i.readlines()
     X = []
     Y = []
+    Y_tf = []
+    replace_y = {'Iris-setosa':0, 'Iris-versicolor':1, 'Iris-virginica':2}
+    replace_y_tf = {'Iris-setosa':[1,0,0], 'Iris-versicolor':[0,1,0], 'Iris-virginica':[0,0,1]}
     for line in lines:
         x1, x2, x3,x4, y1 = line.split(',')
         x = []
@@ -12,18 +18,22 @@ def load_data(filename):
         x.append(x3)
         x.append(x4)
         X.append(x)
-        Y.append(y1)
+        Y.append(replace_y[y1.strip()])
+        Y_tf.append(replace_y_tf[y1.strip()])
 
-    np_X = np.array(X)
-    np_Y = np.array(Y)
+    #X = SelectKBest(chi2, k=2).fit_transform(X, Y)
+    np_X = np.array(X,dtype=np.float32)
+    np_Y = np.array(Y, dtype=np.float32)
+    np_tf_Y = np.array(Y_tf)
+    np_X = SelectKBest(chi2, k=2).fit_transform(np_X, np_Y)
+    
     #print(np_X)
     #print(np_Y)
     #print(np_arr)
-    return train_test_split(np_X, np_Y)
+    return train_test_split(np_X, np_Y, np_tf_Y)
 
 
-def train_test_split(X, y, test_ratio=0.2, seed=None):
-    """将数据 X 和 y 按照test_ratio分割成X_train, X_test, y_train, y_test"""
+def train_test_split(X, y, y_tf, test_ratio=0.2, seed=None):
     assert X.shape[0] == y.shape[0], \
         "the size of X must be equal to the size of y"
     assert 0.0 <= test_ratio <= 1.0, \
@@ -40,10 +50,12 @@ def train_test_split(X, y, test_ratio=0.2, seed=None):
 
     X_train = X[train_indexes]
     y_train = y[train_indexes]
+    y_tf_train = y_tf[train_indexes]
 
     X_test = X[test_indexes]
     y_test = y[test_indexes]
-
-    return X_train, X_test, y_train, y_test
+    y_tf_test = y_tf[test_indexes]
+    return X_train, X_test, y_train, y_test, y_tf_train, y_tf_test
     
+
 
