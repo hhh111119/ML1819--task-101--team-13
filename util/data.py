@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
+from sklearn.preprocessing import StandardScaler
+
 def load_data(filename):
     with open(filename) as i:
         lines = i.readlines()
@@ -55,6 +57,10 @@ def train_test_split(X, y, y_tf, test_ratio=0.2, seed=None):
     X_test = X[test_indexes]
     y_test = y[test_indexes]
     y_tf_test = y_tf[test_indexes]
+    sc = StandardScaler()
+    sc.fit(X_train)
+    X_train = sc.transform(X_train)
+    X_test = sc.transform(X_test)
     return X_train, X_test, y_train, y_test, y_tf_train, y_tf_test
     
 
