@@ -5,29 +5,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 from keras.datasets import boston_housing
 from sklearn.metrics import r2_score
-
 rng = np.random
-
 
 # Parameters
 learning_rate = 0.01
 training_epochs = 2000
 display_step = 50
 
-
-# rescale data to lie between 0 and 1
+# Rescale data to lie between 0 and 1
 def normaliseData(x): 
   scale = x.max()
   return (x/scale)
 
-# Training Data boston_housing.load_data()
+# Load boston_housing.load_data()
 (train_X, train_Y), (test_X, test_Y) = boston_housing.load_data()
 
+#Normalize
 train_X = normaliseData(train_X)
-train_Y = np.reshape(train_Y, [404, 1])
-train_Y = normaliseData(train_Y)
+train_Y = np.reshape(train_Y, [len(train_Y), 1])
 test_X = normaliseData(test_X)
-test_Y = normaliseData(test_Y)
 test_Y = np.reshape(test_Y, [len(test_Y), 1])
 
 # tf Graph Input
@@ -43,7 +39,6 @@ b_final=0
 # Construct a linear model
 #pred = tf.add(tf.multiply(X, W), b)
 pred = tf.matmul(X,W) + b
-
 
 # Mean squared error
 cost = tf.reduce_mean(tf.square(Y-pred))
