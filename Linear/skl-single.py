@@ -25,52 +25,19 @@ print("price_x")
 # price_y_test = np.asarray([1.84, 2.273, 3.2, 2.831, 2.92, 3.24, 1.35, 1.03])
 # price_X_test = price_X_test.reshape(-1, 1)
 # price_X_train = price_X_train.reshape(-1, 1)
+
 iris = datasets.load_iris()
-price_X_train = np.array([x[2] for x in iris.data])
-
-x1 = np.array(price_X_train[0:30])
-xt1 = price_X_train[30:40]
-x2 = price_X_train[40:70]
-xt2 = price_X_train[70:80]
-x3 = price_X_train[80:110]
-xt3 = price_X_train[110:120]
-x4 = price_X_train[120:150]
-price_X_train = np.append(np.append(np.append(x1, x2), x3), x4)
-price_X_test = np.append(np.append(xt1,xt2), xt3)
-
-
-X_test = np.array([x[3] for x in iris.data])
-y1 = np.array(X_test[0:30])
-yt1 = X_test[30:40]
-y2 = X_test[40:70]
-yt2 = X_test[70:80]
-y3 = X_test[80:110]
-yt3 = X_test[110:120]
-y4 = X_test[120:150]
-price_y_train = np.append(np.append(np.append(y1, y2), y3), y4)
-price_y_test = np.append(np.append(yt1,yt2), yt3)
-price_X_train = normaliseData(price_X_train).reshape(-1, 1)
-price_y_train = normaliseData(price_y_train).reshape(-1, 1)
-
-
-'''
-price_X_test = price_X_train[0:20]
-price_X_train = price_X_train[20:150]
+price_X_train = np.array([x[3] for x in iris.data])
 price_X_train = np.reshape(price_X_train, [len(price_X_train), 1])
-price_y_train = np.array([y[3] for y in iris.data])
-
-price_y_test = price_y_train[0:20]
-price_y_train = price_y_train[20:150]
+price_X_train = normaliseData(price_X_train)
+price_y_train = np.array([y[0] for y in iris.data])
 price_y_train = np.reshape(price_y_train, [len(price_y_train), 1])
-'''
+price_y_train = normaliseData(price_y_train)
+
 print(price_X_train.shape)
 print(price_y_train.shape)
-print("price_X_test:", price_X_test.shape)
-print("price_y_test:", price_y_test.shape)
-
-
-price_X_test = normaliseData(price_X_test).reshape(-1, 1)
-price_y_test = normaliseData(price_y_test).reshape(-1, 1)
+price_X_test = price_X_train[0:130]
+price_y_test = price_y_train[0:130]
 
 
 
@@ -88,16 +55,10 @@ price_y_pred = regr.predict(price_X_test)
 print('Coefficients:', regr.coef_)
 print('Intercept:', regr.intercept_)
 print("Mean squared error: %.5f" % mean_squared_error(price_y_test, price_y_pred))
-#print('Variance score: %.5f' % r2_score(price_y_train, regr.coef_*price_X_train + regr.intercept_))
 print('Variance score: %.5f' % r2_score(price_y_test, price_y_pred))
-#print(price_y_test)
-#print(price_y_pred)
 
 #plot
-plt.plot(price_X_train, price_y_train, 'ro', label='Data Points')
-plt.plot(price_X_train, regr.coef_*price_X_train + regr.intercept_, label='Best fit line')
-plt.legend(loc='upper left')
-plt.title('Petal Length and Petal Width (scikit-learn)')
-plt.xlabel('Petal Length')
-plt.ylabel('Petal Width')
+plt.plot(price_X_test, price_y_test, 'ro', label='Original data-sk')
+plt.plot(price_X_test, price_y_pred, label='Fitted line-sk')
+plt.legend()
 plt.show()
