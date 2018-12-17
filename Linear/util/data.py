@@ -3,9 +3,12 @@ import pandas as pd
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
 from sklearn.preprocessing import StandardScaler
+import os.path
 
 def load_data(filename):
-    with open(filename) as i:
+    my_path = os.path.abspath(os.path.dirname(__file__))
+    path = os.path.join(my_path, filename)
+    with open(path) as i:
         lines = i.readlines()
     X = []
     Y = []

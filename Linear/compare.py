@@ -15,7 +15,7 @@ from util.data import load_data
 from matplotlib.colors import ListedColormap
 import matplotlib.pyplot as plt
 import time 
-
+import math
 
 
 
@@ -92,7 +92,7 @@ def main():
     times = []
     counts = 25
     for i in range(counts):
-         X_train, X_test,y_train, y_test = load_data('iris.data')
+         X_train, X_test,y_train, y_test = load_data('../iris.data')
          tf_mse,tf_runtime = tf_linear( X_train, X_test, y_train, y_test)
          sk_mse,sk_runtime = sk_linear( X_train, X_test, y_train, y_test)
          tf_MSE.append(tf_mse)
@@ -104,8 +104,12 @@ def main():
 
     #print('tesorflow better:'+str(tf_large)+' equal:'+ str(equal)+' sk better:'+str(tf_small))
  #   plt.gca().set_color_cycle(['red', 'green'])
-    plt.plot(times, tf_MSE)
-    plt.plot(times, sk_MSE)
+    tf_RMSE = [math.sqrt(n) for n in tf_MSE]
+    sk_RMSE = [math.sqrt(n) for n in sk_MSE]
+    plt.plot(times, tf_RMSE)
+    plt.plot(times, sk_RMSE)
+    print(tf_MSE)
+    print(sk_MSE)
     plt.xticks(np.arange(min(times), max(times)+1, 1.0))
     plt.xlabel('test id')
     plt.ylabel('mean square error')

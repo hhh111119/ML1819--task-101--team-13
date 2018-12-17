@@ -13,7 +13,7 @@ class Classifer:
 
 def main():
     X_train, X_test, y_plt_train, y_plt_test, y_train, y_test = load_data(
-        'iris.data')
+        '../iris.data')
 
     X = tf.placeholder(tf.float32, [None, 2])
     y = tf.placeholder(tf.float32, [None, 3])
