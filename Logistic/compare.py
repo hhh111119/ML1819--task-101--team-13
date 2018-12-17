@@ -11,6 +11,7 @@ import tensorflow as tf
 from util.data import load_data
 from matplotlib.colors import ListedColormap
 import matplotlib.pyplot as plt
+import time
 
 
 
@@ -78,11 +79,21 @@ def main():
     tf_accuracies = []
     sk_accuracies = []
     times = []
-    counts = 500
+    tf_time = []
+    sk_time = []
+    counts = 10
     for i in range(counts):
-         X_train, X_test, y_plt_train, y_plt_test, y_train, y_test = load_data('iris.data')
+         X_train, X_test, y_plt_train, y_plt_test, y_train, y_test = load_data('../iris.data')
+         tf_start_time = time.time()
          tf_ac = tf_l( X_train, X_test, y_plt_train, y_plt_test, y_train, y_test)
+         sk_start_time = tf_end_time = time.time()
+
          sk_ac = sk_l( X_train, X_test, y_plt_train, y_plt_test, y_train, y_test)
+         sk_end_time = time.time()
+         tf_time.append((tf_end_time-tf_start_time))
+         sk_time.append((sk_start_time-sk_end_time))
+         print('tensorflow %s senconds' %(tf_end_time-tf_start_time))
+         print('sk %s seconds' %(sk_end_time-sk_start_time))
          tf_accuracies.append(tf_ac)
          sk_accuracies.append(sk_ac)
          times.append(i)
@@ -111,6 +122,29 @@ def main():
     plt.grid(True)
     plt.savefig('comare'+str(counts)+'.png')
     plt.show()
+    
+    tf_time = [x*1000 for x in tf_time]
+    sk_time = [x*10000 for x in sk_time]
+    plt.gca().set_color_cycle(['red', 'green'])
+    plt.plot(times, tf_time)
+    plt.plot(times, sk_time)
+    plt.xticks(np.arange(min(times), max(times)+1, 1.0))
+  #  plt.yticks(np.arange(0, 6000, 1))
+    plt.xlabel('test id')
+    plt.ylabel('time')
+    plt.legend(['tensorflow', 'scikit-learn'])
+    plt.grid(True)
+    plt.savefig('comare_time'+str(counts)+'.png')
+    plt.show()
+    times = np.array(times) + 1
+    ax = plt.subplot(111)
+    ax.bar(times+0.25, tf_time, width=0.4, color='b', label='tensorflow',align='center')
+    ax.bar(times-0.25, sk_time, width=0.4,color='r', label='sklearn',align='center')
+    plt.show()
 
-
+def autolabel(rects):
+    for rect in rects:
+        h = rect.get_height()
+        ax.text(rect.get_x()+rect.get_width()/2., 1.05*h, '%d'%int(h),
+                ha='center', va='bottom')
 main()
